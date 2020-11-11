@@ -64,7 +64,7 @@ class Main:
         init(convert=True)
         self.clear()
         self.SetTitle('One Man Builds Discord Token Checker Tool')
-        self.title = Style.BRIGHT+Fore.RED+"""
+        self.title = Style.BRIGHT+Fore.WHITE+"""
                               ╔═══════════════════════════════════════════════════════════════╗
                                  ╔╦╗╦╔═╗╔═╗╔═╗╦═╗╔╦╗  ╔╦╗╔═╗╦╔═╔═╗╔╗╔  ╔═╗╦ ╦╔═╗╔═╗╦╔═╔═╗╦═╗
                                   ║║║╚═╗║  ║ ║╠╦╝ ║║   ║ ║ ║╠╩╗║╣ ║║║  ║  ╠═╣║╣ ║  ╠╩╗║╣ ╠╦╝
@@ -78,12 +78,12 @@ class Main:
         self.retries = 0
         self.lock = Lock()
 
-        self.use_proxy = int(input(Style.BRIGHT+Fore.CYAN+'['+Fore.RED+'>'+Fore.CYAN+'] ['+Fore.RED+'1'+Fore.CYAN+']Proxy ['+Fore.RED+'0'+Fore.CYAN+']Proxyless: '))
+        self.use_proxy = int(input(Style.BRIGHT+Fore.WHITE+'['+Fore.GREEN+'>'+Fore.WHITE+'] ['+Fore.GREEN+'1'+Fore.WHITE+']Proxy ['+Fore.GREEN+'0'+Fore.WHITE+']Proxyless: '))
         
         if self.use_proxy == 1:
-            self.proxy_type = int(input(Style.BRIGHT+Fore.CYAN+'['+Fore.RED+'>'+Fore.CYAN+'] ['+Fore.RED+'1'+Fore.CYAN+']Https ['+Fore.RED+'2'+Fore.CYAN+']Socks4 ['+Fore.RED+'3'+Fore.CYAN+']Socks5: '))
+            self.proxy_type = int(input(Style.BRIGHT+Fore.WHITE+'['+Fore.GREEN+'>'+Fore.WHITE+'] ['+Fore.GREEN+'1'+Fore.WHITE+']Https ['+Fore.GREEN+'2'+Fore.WHITE+']Socks4 ['+Fore.GREEN+'3'+Fore.WHITE+']Socks5: '))
         
-        self.threads_num = int(input(Style.BRIGHT+Fore.CYAN+'['+Fore.RED+'>'+Fore.CYAN+'] Threads: '))
+        self.threads_num = int(input(Style.BRIGHT+Fore.WHITE+'['+Fore.GREEN+'>'+Fore.WHITE+'] Threads: '))
 
         print('')
 
@@ -107,12 +107,12 @@ class Main:
 
             if 'username' in response.text:
                 username = response.json()['username']
-                self.PrintText(Fore.CYAN,Fore.RED,'VALID',f'{token} -> {username}')
+                self.PrintText(Fore.WHITE,Fore.GREEN,'VALID',f'{token} -> {username}')
                 with open('valids.txt','a',encoding='utf8') as f:
                     f.write(token+'\n')
                 self.hits += 1
             elif '401: Unauthorized' in response.text:
-                self.PrintText(Fore.CYAN,Fore.RED,'BAD',token)
+                self.PrintText(Fore.GREEN,Fore.WHITE,'BAD',token)
                 with open('bads.txt','a',encoding='utf8') as f:
                     f.write(token+'\n')
                 self.bads += 1
