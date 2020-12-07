@@ -106,8 +106,9 @@ class Main:
                 response = requests.get(link,headers=headers)
 
             if 'username' in response.text:
-                username = response.json()['username']
-                self.PrintText(Fore.WHITE,Fore.GREEN,'VALID',f'{token} -> {username}')
+                self.PrintText(Fore.WHITE,Fore.GREEN,'VALID',token)
+                with open('detailed_hits.txt','a',encoding='utf8') as f:
+                    f.write(response.text+'\n')
                 with open('valids.txt','a',encoding='utf8') as f:
                     f.write(token+'\n')
                 self.hits += 1
