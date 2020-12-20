@@ -16,8 +16,13 @@ class Main:
         else:
             print("\n") * 120
 
-    def SetTitle(self,title_name:str):
-        system("title {0}".format(title_name))
+    def SetTitle(self,title:str):
+        if name == 'posix':
+            stdout.write(f"\x1b]2;{title}\x07")
+        elif name in ('ce', 'nt', 'dos'):
+            system(f'title {title}')
+        else:
+            stdout.write(f"\x1b]2;{title}\x07")
 
     def PrintText(self,bracket_color:Fore,text_in_bracket_color:Fore,text_in_bracket,text):
         self.lock.acquire()
@@ -54,6 +59,7 @@ class Main:
                 "https":"socks5://{0}".format(choice(proxies_file))
             }
         return proxies
+
 
     def TitleUpdate(self):
         while True:
