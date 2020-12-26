@@ -6,6 +6,7 @@ from random import choice
 from threading import Thread,Lock,active_count
 from sys import stdout
 from time import sleep
+import json
 
 class Main:
     def clear(self):
@@ -36,12 +37,16 @@ class Main:
             content = [line.strip('\n') for line in f]
             return content
 
+    def ReadJson(self,filename,method):
+        with open(filename,method) as f:
+            return json.load(f)
+
     def GetRandomUserAgent(self):
-        useragents = self.ReadFile('useragents.txt','r')
+        useragents = self.ReadFile('[Data]/useragents.txt','r')
         return choice(useragents)
 
     def GetRandomProxy(self):
-        proxies_file = self.ReadFile('proxies.txt','r')
+        proxies_file = self.ReadFile('[Data]/proxies.txt','r')
         proxies = {}
         if self.proxy_type == 1:
             proxies = {
@@ -63,13 +68,13 @@ class Main:
 
     def TitleUpdate(self):
         while True:
-            self.SetTitle(f'One Man Builds Discord Token Checker Tool ^| HITS: {self.hits} ^| BADS: {self.bads} ^| RETRIES: {self.retries} ^| THREADS: {active_count()-1}')
+            self.SetTitle(f'[One Man Builds Discord Token Checker Tool] ^| HITS: {self.hits} ^| BADS: {self.bads} ^| RETRIES: {self.retries} ^| THREADS: {active_count()-1}')
             sleep(0.1)
 
     def __init__(self):
         init(convert=True)
+        self.SetTitle('[One Man Builds Discord Token Checker Tool]')
         self.clear()
-        self.SetTitle('One Man Builds Discord Token Checker Tool')
         self.title = Style.BRIGHT+Fore.WHITE+"""
                               ╔═══════════════════════════════════════════════════════════════╗
                                  ╔╦╗╦╔═╗╔═╗╔═╗╦═╗╔╦╗  ╔╦╗╔═╗╦╔═╔═╗╔╗╔  ╔═╗╦ ╦╔═╗╔═╗╦╔═╔═╗╦═╗
@@ -84,12 +89,11 @@ class Main:
         self.retries = 0
         self.lock = Lock()
 
-        self.use_proxy = int(input(Style.BRIGHT+Fore.WHITE+'['+Fore.GREEN+'>'+Fore.WHITE+'] ['+Fore.GREEN+'1'+Fore.WHITE+']Proxy ['+Fore.GREEN+'0'+Fore.WHITE+']Proxyless: '))
-        
-        if self.use_proxy == 1:
-            self.proxy_type = int(input(Style.BRIGHT+Fore.WHITE+'['+Fore.GREEN+'>'+Fore.WHITE+'] ['+Fore.GREEN+'1'+Fore.WHITE+']Https ['+Fore.GREEN+'2'+Fore.WHITE+']Socks4 ['+Fore.GREEN+'3'+Fore.WHITE+']Socks5: '))
-        
-        self.threads_num = int(input(Style.BRIGHT+Fore.WHITE+'['+Fore.GREEN+'>'+Fore.WHITE+'] Threads: '))
+        config = self.ReadJson('[Data]/configs.json','r')
+
+        self.use_proxy = config['use_proxy']
+        self.proxy_type = config['proxy_type']
+        self.threads_num = config['threads']
 
         print('')
 
@@ -113,14 +117,14 @@ class Main:
 
             if 'username' in response.text:
                 self.PrintText(Fore.WHITE,Fore.GREEN,'VALID',token)
-                with open('detailed_hits.txt','a',encoding='utf8') as f:
+                with open('[Data]/[Results]/detailed_hits.txt','a',encoding='utf8') as f:
                     f.write(response.text+'\n')
-                with open('valids.txt','a',encoding='utf8') as f:
+                with open('[Data]/[Results]/valids.txt','a',encoding='utf8') as f:
                     f.write(token+'\n')
                 self.hits += 1
             elif '401: Unauthorized' in response.text:
-                self.PrintText(Fore.GREEN,Fore.WHITE,'BAD',token)
-                with open('bads.txt','a',encoding='utf8') as f:
+                self.PrintText(Fore.WHITE,Fore.RED,'BAD',token)
+                with open('[Data]/[Results]/bads.txt','a',encoding='utf8') as f:
                     f.write(token+'\n')
                 self.bads += 1
             else:
@@ -132,7 +136,7 @@ class Main:
 
     def Start(self):
         Thread(target=self.TitleUpdate).start()
-        tokens = self.ReadFile('tokens.txt','r')
+        tokens = self.ReadFile('[Data]/tokens.txt','r')
         for token in tokens:
             Run = True
             while Run:
